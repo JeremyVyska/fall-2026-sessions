@@ -1,0 +1,26 @@
+{
+  "id": "c7739d02-c6aa-444d-ad06-fb0c1fd52b25",
+  "name": "Delivery Windows",
+  "publisher": "Jeremy Vyska Classes",
+  "version": "1.0.0.0",
+  "brief": "Book sales orders into delivery windows with a daily capacity.",
+  "description": "Class demo PTE. Not for production use.",
+  "platform": "28.0.0.0",
+  "application": "28.0.0.0",
+  "runtime": "17.0",
+  "idRanges": [
+    {
+      "from": 50100,
+      "to": 50149
+    }
+  ],
+  "resourceExposurePolicy": {
+    "allowDebugging": true,
+    "allowDownloadingSource": true,
+    "includeSourceInSymbolFile": true
+  },
+  "target": "Cloud",
+  "features": [
+    "TranslationFile"
+  ]
+}
