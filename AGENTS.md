@@ -27,3 +27,10 @@ small on purpose.
 `.github/instructions/*.instructions.md` hold rules scoped by `applyTo`:
 tests (`test/**`) and translations (`**/*.xlf`). Copilot loads them for
 matching files. Other agents: read the matching file before you edit.
+
+## Routing
+
+Skills live in `.github/skills/<name>/SKILL.md`. Load one when its task comes up:
+
+- Writing or changing tests: `write-al-test`.
+- Adding a field to a table and its pages: `add-field`.
