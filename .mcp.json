@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "bc-code-atlas": {
+      "type": "http",
+      "url": "https://bc-code-atlas.stefanmaron.dev/mcp"
+    },
+    "nab-al-tools": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@nabsolutions/nab-al-tools-mcp"]
+    },
+    "bc-telemetry-buddy": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "bc-telemetry-buddy-mcp"]
+    }
+  }
+}
