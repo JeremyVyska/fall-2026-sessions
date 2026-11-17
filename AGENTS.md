@@ -34,3 +34,10 @@ Skills live in `.github/skills/<name>/SKILL.md`. Load one when its task comes up
 
 - Writing or changing tests: `write-al-test`.
 - Adding a field to a table and its pages: `add-field`.
+
+Custom agents live in `.github/agents/`. Each one carries only its own tools:
+
+- Turning a request into a spec, no code: `spec`.
+- Investigating a reported issue: `triage`.
+
+Code review against BCQuality is not set up here yet.
