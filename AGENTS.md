@@ -21,3 +21,9 @@ small on purpose.
 - Business logic lives in codeunits, not in triggers or pages.
 - New behaviour in `/app` gets a test in `/test`.
 - Look up base app events and signatures. Don't guess them.
+
+## Rules for some files only
+
+`.github/instructions/*.instructions.md` hold rules scoped by `applyTo`:
+tests (`test/**`) and translations (`**/*.xlf`). Copilot loads them for
+matching files. Other agents: read the matching file before you edit.
