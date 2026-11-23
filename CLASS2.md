@@ -160,7 +160,75 @@ An order that still points at a window that has since been blocked can't be
 released. Touches the Mgt. codeunit, the test library and the test
 codeunit. Smaller, with fewer ways to fail. Use it if time is short.
 
+## What `class2-finished` adds
+
+The fallback for each live step.
+
+| File | What it is |
+|---|---|
+| `CLAUDE.md` | Still `@AGENTS.md`, plus three Claude Code-only lines. |
+| `AGENTS.md` | A `Verify` section naming the compile and test commands. 51 lines. |
+| `.claude/settings.json` | Permissions and the hook. |
+| `.claude/hooks/compile-on-edit.ps1` | The hook script. |
+| `.claude/agents/test-runner.md` | Subagent. Runs the tests, returns only failures. No Edit or Write tool. |
+| `/app`, `/test` | Demo task option A, with three new tests. 8 tests, all green. |
+
+**Permissions.** Allow: `compile`, `test`, `container-status`, and
+`git status`, `git diff`, `git log`. Ask: `container-up`, and anything that
+removes containers or images. Deny: reading `.env`. Rules exist for both
+the PowerShell and the Bash tool. Checked against the permissions page of
+the Claude Code docs: rules are evaluated deny, then ask, then allow, and
+`PowerShell(...)` rules have the same shape as `Bash(...)` rules.
+
+**Hook.** `PostToolUse` on `Edit|Write`. The script reads the edited path
+from stdin, ignores anything that isn't `.al`, and compiles. A change under
+`/test` compiles `/test` only. On errors or warnings it exits 2 and Claude
+gets the compiler lines. Checked live in a Claude Code session: a broken
+edit came back as a blocking hook error with the AL0118 line. It costs 5 to
+13 seconds per `.al` edit. That is acceptable here; on a large app, scope
+it or move it to a `Stop` hook.
+
+**Subagent.** It has the PowerShell tool, so it can run anything the
+session's permissions allow. "No edit" means no Edit or Write tool, not a
+sandbox.
+
+**`break-test` on this branch fails two tests**, the original one and the
+new `MovingOrderInsideLeadTimeFails`. Both depend on the date re-check. Run
+the red-test demo from `class2-start` if you want exactly one.
+
+### Does Claude Code pick up `.github/skills/`?
+
+**No.**
+
+- Checked in a live session: Claude Code was started in this repo and the
+  skills it listed did not include `write-al-test` or `add-field`. Only
+  user-level and built-in skills showed.
+- Checked in the docs: the skills page lists `~/.claude/skills/`,
+  `.claude/skills/` in the project and in nested folders, `--add-dir`
+  folders, and plugins. `.github/skills/` and `.agents/skills/` are not
+  listed.
+
+They were not moved or copied. Claude Code still reaches them because the
+routing in `AGENTS.md` names the paths, and it reads the `SKILL.md` as a
+file. The same goes for `.github/agents/`.
+
+Also from the docs: Claude Code reads `AGENTS.md` by itself only when no
+`CLAUDE.md` exists. Here `CLAUDE.md` imports it with `@AGENTS.md`.
+
 ## Open items
+
+- `TODO(verify)` Permission rules for script paths. The docs show cmdlet
+  examples only. Not confirmed that `PowerShell(./scripts/compile.ps1)`
+  matches the command as Claude types it (`./scripts/compile.ps1`,
+  `scripts\compile.ps1`, `pwsh scripts/compile.ps1`). Try it on stream
+  setup: ask for a compile and see whether it prompts.
+- `TODO(verify)` `Read(./.env)` blocks the Read tool, and `cat .env` in
+  Bash. Not confirmed for `Get-Content .env` in the PowerShell tool.
+- `TODO(verify)` The hook's `args` list and `${CLAUDE_PROJECT_DIR}` came
+  from a summarized read of the hooks page. They work in the live check
+  above; the wording in the docs was not confirmed.
+- `TODO(verify)` Subagent `tools: PowerShell, Read, Grep, Glob`. The field
+  names are from the docs. The subagent itself was not invoked.
 
 - `TODO(verify)` BcContainerHelper is 6.1.10 here; the gallery has 6.1.20.
   Not checked whether 6.1.20 fixes the in-container test client. If it
