@@ -1,0 +1,60 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(./scripts/compile.ps1)",
+      "PowerShell(./scripts/compile.ps1 *)",
+      "PowerShell(./scripts/test.ps1)",
+      "PowerShell(./scripts/test.ps1 *)",
+      "PowerShell(./scripts/container-status.ps1)",
+      "PowerShell(git status)",
+      "PowerShell(git status *)",
+      "PowerShell(git diff)",
+      "PowerShell(git diff *)",
+      "PowerShell(git log)",
+      "PowerShell(git log *)",
+      "Bash(git status)",
+      "Bash(git status *)",
+      "Bash(git diff)",
+      "Bash(git diff *)",
+      "Bash(git log)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "PowerShell(./scripts/container-up.ps1)",
+      "PowerShell(./scripts/container-up.ps1 *)",
+      "PowerShell(Remove-BcContainer *)",
+      "PowerShell(docker rm *)",
+      "PowerShell(docker rmi *)",
+      "PowerShell(docker container rm *)",
+      "PowerShell(docker image rm *)",
+      "PowerShell(docker system prune *)",
+      "Bash(docker rm *)",
+      "Bash(docker rmi *)",
+      "Bash(docker container rm *)",
+      "Bash(docker image rm *)",
+      "Bash(docker system prune *)"
+    ],
+    "deny": [
+      "Read(./.env)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "pwsh",
+            "args": [
+              "-NoProfile",
+              "-File",
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/compile-on-edit.ps1"
+            ],
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
