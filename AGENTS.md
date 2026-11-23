@@ -22,6 +22,14 @@ small on purpose.
 - New behaviour in `/app` gets a test in `/test`.
 - Look up base app events and signatures. Don't guess them.
 
+## Verify
+
+A change is done when both pass. Read the output. Don't guess.
+
+- Compile: `scripts/compile.ps1`. Errors and warnings both fail it.
+- Test: `scripts/test.ps1`. One codeunit: `scripts/test.ps1 "<name or ID>"`.
+- Both need the container. Check it with `scripts/container-status.ps1`.
+
 ## Rules for some files only
 
 `.github/instructions/*.instructions.md` hold rules scoped by `applyTo`:
