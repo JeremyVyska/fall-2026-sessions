@@ -25,6 +25,16 @@ codeunit 50150 "JV Library - Deliv. Win."
         exit(DeliveryWindow."Code");
     end;
 
+    procedure CreateDeliveryWindowWithLeadTime(MinLeadTimeDays: Integer): Code[10]
+    var
+        DeliveryWindow: Record "JV Delivery Window";
+    begin
+        DeliveryWindow.Get(CreateDeliveryWindow(0));
+        DeliveryWindow.Validate("Min. Lead Time (Days)", MinLeadTimeDays);
+        DeliveryWindow.Modify(true);
+        exit(DeliveryWindow."Code");
+    end;
+
     procedure CreateSalesOrder(var SalesHeader: Record "Sales Header"; DeliveryDate: Date)
     var
         SalesLine: Record "Sales Line";

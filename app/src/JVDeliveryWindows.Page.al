@@ -35,6 +35,10 @@ page 50100 "JV Delivery Windows"
                 {
                     ToolTip = 'Specifies how many orders can be booked into the window per day. Zero means no limit.';
                 }
+                field("Min. Lead Time (Days)"; Rec."Min. Lead Time (Days)")
+                {
+                    ToolTip = 'Specifies how many days ahead of the requested delivery date an order must be booked into the window. Zero means no minimum.';
+                }
                 field(Blocked; Rec.Blocked)
                 {
                     ToolTip = 'Specifies that the window cannot be assigned to orders.';

@@ -45,6 +45,11 @@ table 50100 "JV Delivery Window"
         {
             Caption = 'Blocked';
         }
+        field(7; "Min. Lead Time (Days)"; Integer)
+        {
+            Caption = 'Min. Lead Time (Days)';
+            MinValue = 0;
+        }
     }
 
     keys

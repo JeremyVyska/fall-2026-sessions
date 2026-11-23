@@ -16,7 +16,7 @@ tableextension 50100 "JV Sales Header" extends "Sales Header"
             var
                 DeliveryWindowMgt: Codeunit "JV Delivery Window Mgt.";
             begin
-                DeliveryWindowMgt.CheckCapacity(Rec);
+                DeliveryWindowMgt.CheckBooking(Rec);
             end;
         }
         modify("Requested Delivery Date")
@@ -25,7 +25,7 @@ tableextension 50100 "JV Sales Header" extends "Sales Header"
             var
                 DeliveryWindowMgt: Codeunit "JV Delivery Window Mgt.";
             begin
-                DeliveryWindowMgt.CheckCapacity(Rec);
+                DeliveryWindowMgt.CheckBooking(Rec);
             end;
         }
     }

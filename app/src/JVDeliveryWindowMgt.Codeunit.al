@@ -6,9 +6,10 @@ using Microsoft.Sales.Setup;
 codeunit 50100 "JV Delivery Window Mgt."
 {
     var
+        LeadTimeErr: Label 'Delivery window %1 needs %2 days of lead time. The earliest delivery date is %3.', Comment = '%1 = window code, %2 = min. lead time in days, %3 = earliest delivery date';
         WindowFullErr: Label 'Delivery window %1 is fully booked on %2 (%3 orders).', Comment = '%1 = window code, %2 = date, %3 = max. orders';
 
-    internal procedure CheckCapacity(SalesHeader: Record "Sales Header")
+    internal procedure CheckBooking(SalesHeader: Record "Sales Header")
     var
         DeliveryWindow: Record "JV Delivery Window";
     begin
@@ -16,6 +17,24 @@ codeunit 50100 "JV Delivery Window Mgt."
             exit;
 
         DeliveryWindow.Get(SalesHeader."JV Delivery Window Code");
+        CheckLeadTime(SalesHeader, DeliveryWindow);
+        CheckCapacity(SalesHeader, DeliveryWindow);
+    end;
+
+    local procedure CheckLeadTime(SalesHeader: Record "Sales Header"; DeliveryWindow: Record "JV Delivery Window")
+    var
+        EarliestDate: Date;
+    begin
+        if DeliveryWindow."Min. Lead Time (Days)" = 0 then
+            exit;
+
+        EarliestDate := WorkDate() + DeliveryWindow."Min. Lead Time (Days)";
+        if SalesHeader."Requested Delivery Date" < EarliestDate then
+            Error(LeadTimeErr, DeliveryWindow."Code", DeliveryWindow."Min. Lead Time (Days)", EarliestDate);
+    end;
+
+    local procedure CheckCapacity(SalesHeader: Record "Sales Header"; DeliveryWindow: Record "JV Delivery Window")
+    begin
         if DeliveryWindow."Max. Orders per Day" = 0 then
             exit;
 

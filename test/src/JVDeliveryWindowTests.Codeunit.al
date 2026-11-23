@@ -116,6 +116,68 @@ codeunit 50151 "JV Delivery Window Tests"
         Assert.AreEqual(SalesHeader.Status::Released, SalesHeader.Status, 'Order not released.');
     end;
 
+    [Test]
+    procedure BookingInsideLeadTimeFails()
+    var
+        SalesHeader: Record "Sales Header";
+        WindowCode: Code[10];
+    begin
+        // [SCENARIO] A window refuses an order that is too close to delivery
+        // [GIVEN] A window with three days of lead time
+        WindowCode := LibraryDeliveryWindow.CreateDeliveryWindowWithLeadTime(3);
+
+        // [WHEN] An order two days ahead is booked into it
+        LibraryDeliveryWindow.CreateSalesOrder(SalesHeader, DaysAhead(2));
+        asserterror SalesHeader.Validate("JV Delivery Window Code", WindowCode);
+
+        // [THEN] The booking fails with the lead time error, naming the earliest date
+        Assert.ExpectedError('days of lead time');
+        Assert.ExpectedError(Format(DaysAhead(3)));
+    end;
+
+    [Test]
+    procedure BookingOnEarliestDateSucceeds()
+    var
+        SalesHeader: Record "Sales Header";
+        WindowCode: Code[10];
+    begin
+        // [SCENARIO] The earliest allowed date is exactly the lead time ahead
+        // [GIVEN] A window with three days of lead time
+        WindowCode := LibraryDeliveryWindow.CreateDeliveryWindowWithLeadTime(3);
+
+        // [WHEN] An order three days ahead is booked into it
+        LibraryDeliveryWindow.BookOrder(SalesHeader, WindowCode, DaysAhead(3));
+
+        // [THEN] The order keeps the window code
+        SalesHeader.Get(SalesHeader."Document Type", SalesHeader."No.");
+        Assert.AreEqual(WindowCode, SalesHeader."JV Delivery Window Code", 'Window code not stored.');
+    end;
+
+    [Test]
+    procedure MovingOrderInsideLeadTimeFails()
+    var
+        SalesHeader: Record "Sales Header";
+        WindowCode: Code[10];
+    begin
+        // [SCENARIO] Changing the date re-checks the window's lead time
+        // [GIVEN] A window with three days of lead time
+        WindowCode := LibraryDeliveryWindow.CreateDeliveryWindowWithLeadTime(3);
+
+        // [GIVEN] An order booked into it, three days ahead
+        LibraryDeliveryWindow.BookOrder(SalesHeader, WindowCode, DaysAhead(3));
+
+        // [WHEN] The order is moved to tomorrow
+        asserterror SalesHeader.Validate("Requested Delivery Date", Tomorrow());
+
+        // [THEN] The move fails with the lead time error
+        Assert.ExpectedError('days of lead time');
+    end;
+
+    local procedure DaysAhead(Days: Integer): Date
+    begin
+        exit(WorkDate() + Days);
+    end;
+
     local procedure Tomorrow(): Date
     begin
         exit(CalcDate('<+1D>', WorkDate()));
