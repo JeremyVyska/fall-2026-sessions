@@ -23,8 +23,11 @@ try {
     foreach ($name in 'app', 'test') {
         $manifest = Get-Content (Join-Path $RepoRoot "$name\app.json") -Raw | ConvertFrom-Json
         $appFile = Join-Path $OutputFolder "$($manifest.publisher)_$($manifest.name)_$($manifest.version).app"
+        # ForceSync and Ignore: switching branches can remove a field that the
+        # test app already in the container still uses. Fine in a dev container.
         Publish-BcContainerApp -containerName $ContainerName -appFile $appFile `
-            -credential $credential -useDevEndpoint 6> $null 3> $null
+            -credential $credential -useDevEndpoint -syncMode ForceSync `
+            -dependencyPublishingOption Ignore 6> $null 3> $null
     }
     # $manifest is now the test app: run only its tests, not Microsoft's.
     # -connectFromHost needs PowerShell 7. BcContainerHelper 6.1.10's in-container

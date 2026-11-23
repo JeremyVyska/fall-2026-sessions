@@ -129,6 +129,11 @@ the artifact download to the 421 s.
   on that newer image (`error SYSLIB0014: 'ServicePointManager' is
   obsolete`). `test.ps1` uses `-connectFromHost` instead, which needs
   PowerShell 7.
+- **Switching branches broke publish.** Going from `class2-finished` back
+  to `class2-start` removes a field, and the test app still in the
+  container uses it. `test.ps1` now publishes with `-syncMode ForceSync`
+  and `-dependencyPublishingOption Ignore`. Data in the app's own tables
+  can be lost on a switch. That is fine in this container.
 - **Docker refused a non-elevated shell** until
   `Check-BcContainerHelperPermissions -Fix` was run.
 
